@@ -1,0 +1,28 @@
+<% layout("layouts/boilerplate") %>
+<% if (q) { %>
+  <p class="text-muted">Showing results for "<strong><%= q %></strong>" (<%= listings.length %>)</p>
+<% } %>
+<% if (!listings.length) { %>
+  <div class="text-center py-5">
+    <h4>No stays found</h4>
+    <p class="text-muted">Try a different search, or be the first to list a place.</p>
+    <a href="/listings/new" class="btn btn-brand">Add a listing</a>
+  </div>
+<% } else { %>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+  <% for (let l of listings) { %>
+    <div class="col">
+      <a href="/listings/<%= l._id %>" class="text-decoration-none text-dark">
+        <div class="card listing-card h-100">
+          <img src="<%= l.image.url.replace('/upload/', '/upload/w_600,q_auto,f_auto/') %>"class="card-img-top" alt="<%= l.title %>" loading="lazy">
+          <div class="card-body">
+            <h6 class="card-title mb-1"><%= l.title %></h6>
+            <p class="small text-muted mb-1"><%= l.location %>, <%= l.country %></p>
+            <p class="mb-0"><strong>&#8377;<%= l.price.toLocaleString("en-IN") %></strong> <span class="text-muted small">/ night</span></p>
+          </div>
+        </div>
+      </a>
+    </div>
+  <% } %>
+</div>
+<% } %>

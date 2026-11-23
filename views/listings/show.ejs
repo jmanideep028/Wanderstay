@@ -1,0 +1,67 @@
+<% layout("layouts/boilerplate") %>
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <h2 class="mb-1"><%= listing.title %></h2>
+    <p class="text-muted">
+      <%= listing.location %>, <%= listing.country %>
+      <% if (count) { %> &middot; <span class="stars">&#9733;</span> <%= avg.toFixed(1) %> (<%= count %> review<%= count > 1 ? "s" : "" %>)<% } %>
+    </p>
+    <img src="<%= listing.image.url.replace('/upload/', '/upload/w_1000,q_auto,f_auto/') %>"class="show-img rounded mb-3" alt="<%= listing.title %>">
+    <p class="mb-1">Hosted by <strong><%= listing.owner.username %></strong></p>
+    <p><%= listing.description %></p>
+    <p class="fs-5"><strong>&#8377;<%= listing.price.toLocaleString("en-IN") %></strong> <span class="text-muted fs-6">/ night</span></p>
+
+    <% if (currUser && listing.owner._id.equals(currUser._id)) { %>
+      <div class="d-flex gap-2 mb-4">
+        <a href="/listings/<%= listing._id %>/edit" class="btn btn-brand">Edit</a>
+        <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete this listing and its reviews?')">
+          <button class="btn btn-dark">Delete</button>
+        </form>
+      </div>
+    <% } %>
+
+    <hr>
+    <% if (currUser && !listing.owner._id.equals(currUser._id)) { %>
+      <h5>Leave a review</h5>
+      <form action="/listings/<%= listing._id %>/reviews" method="POST" class="needs-validation mb-4" novalidate>
+        <div class="mb-2">
+          <div class="star-input">
+            <% for (let i = 5; i >= 1; i--) { %>
+              <input type="radio" id="star<%= i %>" name="review[rating]" value="<%= i %>" <%= i === 5 ? "required" : "" %>>
+              <label for="star<%= i %>" title="<%= i %> stars">&#9733;</label>
+            <% } %>
+          </div>
+        </div>
+        <div class="mb-2">
+          <textarea class="form-control" name="review[comment]" rows="3" maxlength="1000" placeholder="How was your stay?" required></textarea>
+          <div class="invalid-feedback">Please add a short comment and a rating.</div>
+        </div>
+        <button class="btn btn-brand">Submit</button>
+      </form>
+    <% } else if (!currUser) { %>
+      <p class="text-muted"><a href="/login">Log in</a> to leave a review.</p>
+    <% } %>
+
+    <h5>Reviews</h5>
+    <% if (!count) { %>
+      <p class="text-muted">No reviews yet.</p>
+    <% } %>
+    <% for (let r of listing.reviews) { %>
+      <div class="card mb-2">
+        <div class="card-body py-2">
+          <div class="d-flex justify-content-between">
+            <strong>@<%= r.author.username %></strong>
+            <span class="stars"><%= "★".repeat(r.rating) %><span class="text-muted"><%= "★".repeat(5 - r.rating) %></span></span>
+          </div>
+          <p class="mb-1"><%= r.comment %></p>
+          <small class="text-muted"><%= r.createdAt.toDateString() %></small>
+          <% if (currUser && r.author._id.equals(currUser._id)) { %>
+            <form class="d-inline float-end" action="/listings/<%= listing._id %>/reviews/<%= r._id %>?_method=DELETE" method="POST">
+              <button class="btn btn-sm btn-outline-dark">Delete</button>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>

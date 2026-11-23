@@ -1,0 +1,38 @@
+<% layout("layouts/boilerplate") %>
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <h3 class="mb-3">Edit your listing</h3>
+    <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+      <div class="mb-3">
+        <label class="form-label" for="title">Title</label>
+        <input class="form-control" id="title" name="listing[title]" value="<%= listing.title %>" maxlength="100" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="description">Description</label>
+        <textarea class="form-control" id="description" name="listing[description]" rows="4" required><%= listing.description %></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label d-block">Current photo</label>
+        <img src="<%= preview %>" class="rounded mb-2" alt="current photo">
+        <input class="form-control" type="file" name="listing[image]" accept="image/png,image/jpeg,image/webp">
+        <div class="form-text">Leave empty to keep this photo.</div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label" for="price">Price / night (&#8377;)</label>
+          <input class="form-control" type="number" min="0" id="price" name="listing[price]" value="<%= listing.price %>" required>
+        </div>
+        <div class="col-md-8 mb-3">
+          <label class="form-label" for="country">Country</label>
+          <input class="form-control" id="country" name="listing[country]" value="<%= listing.country %>" required>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="location">Location</label>
+        <input class="form-control" id="location" name="listing[location]" value="<%= listing.location %>" required>
+      </div>
+      <button class="btn btn-brand">Save changes</button>
+      <a href="/listings/<%= listing._id %>" class="btn btn-outline-secondary ms-2">Cancel</a>
+    </form>
+  </div>
+</div>
